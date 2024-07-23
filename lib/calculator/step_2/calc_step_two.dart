@@ -11,11 +11,12 @@ import 'text_box_item.dart';
 class CalcStepTwo extends StatefulWidget {
   final List<FoodItem> selectedFoods;
   final Function(FoodItem) removeSelectedFood;
+  final double trackedCarbs; final bool isManualInput;
   const CalcStepTwo(
       {Key? key,
       required this.selectedFoods,
-      required double trackedCarbs,
-      required this.removeSelectedFood})
+      required this.removeSelectedFood,
+      required this.trackedCarbs, required this.isManualInput})
       : super(key: key);
 
   @override
@@ -51,7 +52,7 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                 MaterialPageRoute(
                   builder: (context) => CalcStepThree(
                     tdid: double.tryParse(tdid) ?? 0,
-                    totalCarbsStep3: calculateTotalCarbs(widget.selectedFoods),
+                    totalCarbsStep3: widget.isManualInput ? widget.trackedCarbs : calculateTotalCarbs(widget.selectedFoods),
                   ),
                 ),
               );
@@ -87,7 +88,23 @@ class CalcStepTwoState extends State<CalcStepTwo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
+              if (widget.isManualInput)...[
+                const Text(
+                "Manual Carb Intake",
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: 40,
+                ),
+              ),
+              Text(
+                "${widget.trackedCarbs}g",
+                style: const TextStyle(
+                  fontSize: 30
+                ),
+              )
+              ]
+              else...[
+                const Text(
                 "Selected Foods",
                 style: TextStyle(
                   decoration: TextDecoration.underline,
@@ -243,6 +260,7 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                   ],
                 ),
               ),
+              ],
               const SizedBox(
                 height: 10,
               ),

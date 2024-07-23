@@ -1,32 +1,63 @@
 import 'package:flutter/material.dart';
-//11:13:05
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Disclaimer extends StatefulWidget {
-  const Disclaimer({super.key});
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
 
   @override
-  State<Disclaimer> createState() => DisclaimerState();
+  // ignore: library_private_types_in_public_api
+  _OnboardingScreenState createState() => _OnboardingScreenState();
 }
 
-class DisclaimerState extends State<Disclaimer> {
-  
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isBottom = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset >=
+        _scrollController.position.maxScrollExtent) {
+      setState(() {
+        _isBottom = true;
+      });
+    }
+  }
+
+  Future<void> _acceptDisclaimer() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('acceptedDisclaimer', true);
+    // ignore: use_build_context_synchronously
+    Navigator.pushReplacementNamed(context, '/home');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Color.fromARGB(255, 215, 206, 178),
       appBar: AppBar(
-        title: const Text("Disclaimer"),
+        title: const Text('Disclaimer'),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(15.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-Text(
-  '''
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: const Text(
+                  '''
 Summary:
 
 This application, DiabFit, is not created by medical professionals. Although the calculations are based on research, they are not guaranteed to be 100% accurate. Users should always consult medical experts and treat the information from this app with caution.
@@ -69,19 +100,18 @@ Acknowledgment:
 
 By using the DiabFit app, you acknowledge that you have read, understood, and agreed to the terms and conditions outlined in this disclaimer. If you do not agree with these terms, please do not use the app.
   ''',
-  style: TextStyle(fontSize: 16.0),
-),
-
-Text("© 2024 DiabFit"),
-
-                
-              ],
-              
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
             ),
-          ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _isBottom ? _acceptDisclaimer : null,
+              child: Text('I Accept'),
+            ),
+          ],
         ),
       ),
     );
   }
-
 }

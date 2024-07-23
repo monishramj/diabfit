@@ -56,6 +56,18 @@ class _CalcFinalPageState extends State<CalcFinalPage> {
         ((widget.finalCurrentBG - widget.finalTargetBG) / widget.finalISF);
     return Scaffold(
       appBar: AppBar(),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(10),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/home');
+          },
+          child: const Text(
+            "Return",
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+      ),
       body: Center(
         child: Stack(
           children: [
