@@ -46,7 +46,7 @@ class CalcStepTwoState extends State<CalcStepTwo> {
             bool hasSelectedFoods = widget.selectedFoods.isNotEmpty;
             double? parsedTDID = double.tryParse(tdid);
             bool isValidTdid = parsedTDID != null && parsedTDID > 0;
-            if (hasSelectedFoods && isValidTdid) {
+            if ((hasSelectedFoods || widget.isManualInput) && isValidTdid) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -56,7 +56,7 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                   ),
                 ),
               );
-            } else if (widget.selectedFoods.isEmpty) {
+            } else if (widget.selectedFoods.isEmpty && !widget.isManualInput) {
               Flushbar(
                 title: "You cannot have an empty list of foods.",
                 message: "Go back to Step 1 to configure your foods.",
