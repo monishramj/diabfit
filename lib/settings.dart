@@ -18,12 +18,26 @@ class _SettingsPageState extends State<SettingsPage> {
       title: const Text("Settings"),
       centerTitle: true,
     ),
+    bottomNavigationBar: const BottomAppBar(
+        elevation: 0,
+        shape: CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text("By Monish Ramesh Jayakumar"),
+          Text("DiabFit Beta v.1.0.0")
+        ],
+      ),
+    ),
     body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Dark Mode', style: TextStyle(fontSize: 20),),
+            const Text('Dark Mode', style: TextStyle(fontSize: 20),),
             Switch(
               value: widget.themeMode == ThemeMode.dark,
               onChanged: (value) {

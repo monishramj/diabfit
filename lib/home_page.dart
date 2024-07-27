@@ -18,10 +18,16 @@ class CalculatorHomePage extends StatefulWidget {
 class CalculatorHomePageState extends State<CalculatorHomePage> {
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    // ignore: unused_local_variable
+    final logoImage = brightness == Brightness.light
+        ? 'assets/icons/logo_light_mode.png'
+        : 'assets/icons/logo_dark_mode.png';
+
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -29,7 +35,7 @@ class CalculatorHomePageState extends State<CalculatorHomePage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.settings),
+              icon: const Icon(Icons.settings),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -43,7 +49,6 @@ class CalculatorHomePageState extends State<CalculatorHomePage> {
               },
             ),
             TextButton(
-              
                 onPressed: () {
                   Navigator.pushNamed(context, '/disclaimer');
                 },
@@ -56,7 +61,7 @@ class CalculatorHomePageState extends State<CalculatorHomePage> {
                   ),
                 )),
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: const Icon(Icons.help_outline),
               onPressed: () {
                 // Navigate to instructions page
                 //Navigator.push(
@@ -73,7 +78,12 @@ class CalculatorHomePageState extends State<CalculatorHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 70),
+            SizedBox(
+                height: 180,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.asset("assets/icons/app_icon.png"))),
+            const SizedBox(height: 0),
             const Text(
               "DiabFit",
               style: TextStyle(

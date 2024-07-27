@@ -1,4 +1,3 @@
-//import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:insulin_wizard/calculator/step_3/calc_step_three.dart';
@@ -6,18 +5,20 @@ import 'package:insulin_wizard/calculator/step_3/calc_step_three.dart';
 import '../step_1/calc_step_one.dart';
 import '../step_1/food_item_page.dart';
 import 'text_box_item.dart';
-//11:13:05
 
 class CalcStepTwo extends StatefulWidget {
   final List<FoodItem> selectedFoods;
   final Function(FoodItem) removeSelectedFood;
-  final double trackedCarbs; final bool isManualInput;
-  const CalcStepTwo(
-      {Key? key,
-      required this.selectedFoods,
-      required this.removeSelectedFood,
-      required this.trackedCarbs, required this.isManualInput})
-      : super(key: key);
+  final double trackedCarbs;
+  final bool isManualInput;
+
+  const CalcStepTwo({
+    Key? key,
+    required this.selectedFoods,
+    required this.removeSelectedFood,
+    required this.trackedCarbs,
+    required this.isManualInput,
+  }) : super(key: key);
 
   @override
   State<CalcStepTwo> createState() => CalcStepTwoState();
@@ -32,15 +33,19 @@ class CalcStepTwoState extends State<CalcStepTwo> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    final isPortrait = mediaQuery.orientation == Orientation.portrait;
+
     return Scaffold(
-      // backgroundColor: Color.fromARGB(255, 215, 206, 178),
       appBar: AppBar(
         title: const Text("Step 2 - Medicinal Info"),
         centerTitle: true,
       ),
 
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(screenWidth * 0.02),
         child: ElevatedButton(
           onPressed: () {
             bool hasSelectedFoods = widget.selectedFoods.isNotEmpty;
@@ -83,193 +88,197 @@ class CalcStepTwoState extends State<CalcStepTwo> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(screenWidth * 0.05),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (widget.isManualInput)...[
-                const Text(
-                "Manual Carb Intake",
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  fontSize: 40,
+              if (widget.isManualInput) ...[
+                Text(
+                  "Manual Carb Intake",
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontSize: screenWidth * 0.08,
+                  ),
                 ),
-              ),
-              Text(
-                "${widget.trackedCarbs}g",
-                style: const TextStyle(
-                  fontSize: 30
+                Text(
+                  "${widget.trackedCarbs}g",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.06,
+                  ),
                 ),
-              )
-              ]
-              else...[
-                const Text(
-                "Selected Foods",
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  fontSize: 40,
+              ] else ...[
+                Text(
+                  "Selected Foods",
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontSize: screenWidth * 0.08,
+                  ),
                 ),
-              ),
-              Card(
-                elevation: 15,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Card(
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                          height: 200,
-                          child: widget.selectedFoods.isEmpty
-                              ? const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Opacity(
-                                      opacity: .3,
-                                      child: Text(
-                                        "This list is empty. Go back to Step 1 and configure your foods.",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : ListView.builder(
-                                  itemCount: widget.selectedFoods.length,
-                                  itemBuilder: (context, index) {
-                                    return ClipRRect(
-                                      child: Dismissible(
-                                        key: Key(
-                                            "foodItem_${widget.selectedFoods[index].food}"),
-                                        onDismissed: (direction) {
-                                          Flushbar(
-                                            title: "Item Removed",
-                                            message:
-                                                "The ${widget.selectedFoods[index].food} has been removed.",
-                                            duration:
-                                                const Duration(seconds: 2),
-                                          ).show(context);
-                                          setState(() {
-                                            widget.removeSelectedFood(
-                                                widget.selectedFoods[index]);
-                                          });
-
-                                          if (widget.selectedFoods.isEmpty) {
-                                            Flushbar(
-                                              title:
-                                                  "You cannot have an empty list of foods.",
-                                              message:
-                                                  "Go back to Step 1 to configure your foods.",
-                                              duration:
-                                                  const Duration(seconds: 3),
-                                            ).show(context);
-                                          }
-                                        },
-                                        direction: DismissDirection.startToEnd,
-                                        movementDuration:
-                                            const Duration(milliseconds: 500),
-                                        background: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                          ),
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Icon(
-                                              Icons.delete,
-                                              color:
-                                                  Theme.of(context).canvasColor,
-                                            ),
+                Card(
+                  elevation: 15,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(screenWidth * 0.02),
+                        child: Card(
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(
+                                screenWidth * 0.03,
+                                screenWidth * 0.03,
+                                screenWidth * 0.03,
+                                0),
+                            height: isPortrait ? screenHeight * 0.4 : screenHeight * 0.5,
+                            child: widget.selectedFoods.isEmpty
+                                ? Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(screenWidth * 0.02),
+                                      child: Opacity(
+                                        opacity: .3,
+                                        child: Text(
+                                          "This list is empty. Go back to Step 1 and configure your foods.",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: screenWidth * 0.05,
                                           ),
                                         ),
-                                        child: ListTile(
-                                            leading: Hero(
-                                              tag:
-                                                  'foodItem_${widget.selectedFoods[index].food}',
-                                              child: ClipOval(
-                                                child: Image.network(
-                                                  widget.selectedFoods[index]
-                                                      .getPic(),
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return Image.network(
-                                                        defaultFoodIcon); // Use default image in case of error
-                                                  },
-                                                ),
+                                      ),
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    itemCount: widget.selectedFoods.length,
+                                    itemBuilder: (context, index) {
+                                      return ClipRRect(
+                                        child: Dismissible(
+                                          key: Key(
+                                              "foodItem_${widget.selectedFoods[index].food}"),
+                                          onDismissed: (direction) {
+                                            Flushbar(
+                                              title: "Item Removed",
+                                              message:
+                                                  "The ${widget.selectedFoods[index].food} has been removed.",
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                            ).show(context);
+                                            setState(() {
+                                              widget.removeSelectedFood(
+                                                  widget.selectedFoods[index]);
+                                            });
+
+                                            if (widget.selectedFoods.isEmpty) {
+                                              Flushbar(
+                                                title:
+                                                    "You cannot have an empty list of foods.",
+                                                message:
+                                                    "Go back to Step 1 to configure your foods.",
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                              ).show(context);
+                                            }
+                                          },
+                                          direction: DismissDirection.startToEnd,
+                                          movementDuration:
+                                              const Duration(milliseconds: 500),
+                                          background: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(screenWidth * 0.03),
+                                              child: Icon(
+                                                Icons.delete,
+                                                color: Theme.of(context).canvasColor,
                                               ),
                                             ),
-                                            title: Text(
-                                              widget.selectedFoods[index]
-                                                  .getFood(),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            subtitle: Text(
-                                              "${(widget.selectedFoods[index].totalKCal)} kCal - ${widget.selectedFoods[index].servingsamt} ${widget.selectedFoods[index].measureType}(s)",
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        FoodItemPage(
-                                                          foodItem: widget
-                                                                  .selectedFoods[
-                                                              index],
-                                                        )),
-                                              );
-                                            }),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                          ),
+                                          child: ListTile(
+                                              leading: Hero(
+                                                tag:
+                                                    'foodItem_${widget.selectedFoods[index].food}',
+                                                child: ClipOval(
+                                                  child: Image.network(
+                                                    widget.selectedFoods[index]
+                                                        .getPic(),
+                                                    errorBuilder: (context, error,
+                                                        stackTrace) {
+                                                      return Image.network(
+                                                          defaultFoodIcon);
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              title: Text(
+                                                widget.selectedFoods[index]
+                                                    .getFood(),
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontSize: screenWidth * 0.04,
+                                                ),
+                                              ),
+                                              subtitle: Text(
+                                                "${(widget.selectedFoods[index].totalKCal)} kCal - ${widget.selectedFoods[index].servingsamt} ${widget.selectedFoods[index].measureType}(s)",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontSize: screenWidth * 0.035,
+                                                ),
+                                              ),
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          FoodItemPage(
+                                                            foodItem: widget
+                                                                    .selectedFoods[
+                                                                index],
+                                                          )),
+                                                );
+                                              }),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      "Total Carbohydrates",
-                      style: TextStyle(
-                        fontSize: 24,
+                      SizedBox(
+                        height: screenHeight * 0.02,
                       ),
-                      textAlign: TextAlign.center,
-                      textHeightBehavior: TextHeightBehavior(
-                          applyHeightToFirstAscent: false,
-                          applyHeightToLastDescent: false),
-                    ),
-                    Text(
-                      "${calculateTotalCarbs(widget.selectedFoods).toStringAsFixed(2)}g",
-                      style: const TextStyle(
-                        fontSize: 50,
+                      Text(
+                        "Total Carbohydrates",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.06,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                      textHeightBehavior: const TextHeightBehavior(
-                          applyHeightToFirstAscent: false,
-                          applyHeightToLastDescent: false),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
+                      Text(
+                        "${calculateTotalCarbs(widget.selectedFoods).toStringAsFixed(2)}g",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.08,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.02,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
               ],
-              const SizedBox(
-                height: 10,
+              SizedBox(
+                height: screenHeight * 0.02,
               ),
-              const Divider(),
-              const Text(
+              Divider(),
+              Text(
                 "Medicinal Info",
                 style: TextStyle(
                   decoration: TextDecoration.underline,
-                  fontSize: 40,
+                  fontSize: screenWidth * 0.08,
                 ),
               ),
               Column(
@@ -284,7 +293,7 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                         tdid = value;
                       });
                     },
-                  )
+                  ),
                 ],
               ),
             ],

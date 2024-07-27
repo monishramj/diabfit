@@ -6,8 +6,11 @@ import 'info_card_item.dart';
 
 class CalcStepThree extends StatefulWidget {
   final double tdid, totalCarbsStep3;
-  const CalcStepThree(
-      {super.key, required this.tdid, required this.totalCarbsStep3});
+  const CalcStepThree({
+    Key? key,
+    required this.tdid,
+    required this.totalCarbsStep3,
+  }) : super(key: key);
 
   @override
   _CalcStepThreeState createState() => _CalcStepThreeState();
@@ -18,14 +21,17 @@ class _CalcStepThreeState extends State<CalcStepThree> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+
     return Scaffold(
-      // backgroundColor: Color.fromARGB(255, 215, 206, 178),
       appBar: AppBar(
         title: const Text("Step 3 - Glucose Information"),
         centerTitle: true,
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(screenWidth * 0.02),
         child: ElevatedButton(
           onPressed: () {
             double currentBGValue = double.tryParse(currentBG) ?? 0;
@@ -85,7 +91,7 @@ class _CalcStepThreeState extends State<CalcStepThree> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(screenWidth * 0.05),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -98,17 +104,17 @@ class _CalcStepThreeState extends State<CalcStepThree> {
               ),
               Text(
                 "Total Carbs: ${widget.totalCarbsStep3.toString()}g\nTDID: ${widget.tdid.toString()} units",
-                style: const TextStyle(
+                style: TextStyle(
                   decoration: TextDecoration.underline,
-                  fontSize: 30,
+                  fontSize: screenWidth * 0.06,
                 ),
               ),
               const Divider(),
-              const Text(
+              Text(
                 "Glucose Information",
                 style: TextStyle(
                   decoration: TextDecoration.underline,
-                  fontSize: 40,
+                  fontSize: screenWidth * 0.08,
                 ),
               ),
               const SizedBox(height: 10),
@@ -122,9 +128,7 @@ class _CalcStepThreeState extends State<CalcStepThree> {
                   });
                 },
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               InputBox(
                 txt: "Target Blood Glucose",
                 icon: Icons.track_changes_outlined,
@@ -135,15 +139,13 @@ class _CalcStepThreeState extends State<CalcStepThree> {
                   });
                 },
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                    width: 150,
-                    height: 150,
+                    width: screenWidth * 0.4,
+                    height: screenHeight * 0.2,
                     child: InfoCard(
                       title: "ISF",
                       infoText: "skibidi",
@@ -152,8 +154,8 @@ class _CalcStepThreeState extends State<CalcStepThree> {
                     ),
                   ),
                   SizedBox(
-                    width: 150,
-                    height: 150,
+                    width: screenWidth * 0.4,
+                    height: screenHeight * 0.2,
                     child: InfoCard(
                       title: "Carb Ratio",
                       infoText: "skibidi",
