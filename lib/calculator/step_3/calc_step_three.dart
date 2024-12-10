@@ -51,7 +51,7 @@ class _CalcStepThreeState extends State<CalcStepThree> {
                     finalTotalCarbs: widget.totalCarbsStep3,
                     finalCurrentBG: currentBGValue,
                     finalTargetBG: targetBGValue,
-                    finalISF: 1800 / widget.tdid,
+                    finalISF: 1500 / widget.tdid,
                   ),
                 ),
               );
@@ -85,7 +85,7 @@ class _CalcStepThreeState extends State<CalcStepThree> {
             }
           },
           child: const Text(
-            "Continue",
+            "Calculate",
             style: TextStyle(fontSize: 20),
           ),
         ),
@@ -103,7 +103,7 @@ class _CalcStepThreeState extends State<CalcStepThree> {
                 ),
               ),
               Text(
-                "Total Carbs: ${widget.totalCarbsStep3.toString()}g\nTDID: ${widget.tdid.toString()} units",
+                "Total Carbs: ${widget.totalCarbsStep3.toStringAsFixed(2)}g\nTDID: ${widget.tdid.toStringAsFixed(2)} units",
                 style: TextStyle(
                   decoration: TextDecoration.underline,
                   fontSize: screenWidth * 0.06,
@@ -121,7 +121,8 @@ class _CalcStepThreeState extends State<CalcStepThree> {
               InputBox(
                 txt: "Current Blood Glucose",
                 icon: Icons.access_alarms_outlined,
-                acronym: "",
+                acronym: "mg/dL",
+                desc: "This is the level of sugar (glucose) in your blood currently, after your meal. It should be higher than your target blood glucose.",
                 input: (value) {
                   setState(() {
                     currentBG = value;
@@ -132,7 +133,8 @@ class _CalcStepThreeState extends State<CalcStepThree> {
               InputBox(
                 txt: "Target Blood Glucose",
                 icon: Icons.track_changes_outlined,
-                acronym: "",
+                acronym: "mg/dL",
+                desc: "This is the ideal blood sugar level you aim for. It’s set based on your doctor’s recommendations to keep you healthy.",
                 input: (value) {
                   setState(() {
                     targetBG = value;
@@ -148,7 +150,7 @@ class _CalcStepThreeState extends State<CalcStepThree> {
                     height: screenHeight * 0.2,
                     child: InfoCard(
                       title: "ISF",
-                      infoText: "skibidi",
+                      infoText: "ISF, or your Insulin Sensitivity Factor, tells you how much 1 unit of insulin will affect your blood sugar. For example, if your ISF is 50, 1 unit of insulin will reduce your blood sugar by 50 mg/dL. This can be determied by your total daily insulin dose.",
                       value: (1800 / widget.tdid).toStringAsFixed(2),
                       icon: Icons.thermostat_outlined,
                     ),
@@ -158,7 +160,7 @@ class _CalcStepThreeState extends State<CalcStepThree> {
                     height: screenHeight * 0.2,
                     child: InfoCard(
                       title: "Carb Ratio",
-                      infoText: "skibidi",
+                      infoText: "This indicates how many grams of carbohydrates 1 unit of insulin will cover. For instance, if your ratio is 10:1, 1 unit of insulin is needed for every 10 grams of carbs you eat.",
                       value: (500 / widget.tdid).toStringAsFixed(2),
                       icon: Icons.restaurant_outlined,
                     ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InputBox extends StatelessWidget {
-  final String txt, acronym;
+  final String txt, acronym, desc;
   final IconData icon;
   final ValueChanged<String> input;
 
@@ -11,6 +11,7 @@ class InputBox extends StatelessWidget {
     required this.icon,
     required this.acronym,
     required this.input,
+    required this.desc,
   });
 
   @override
@@ -43,7 +44,7 @@ class InputBox extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) { return AlertDialog(
                             title: Text(txt),
-                            content: const Text("SKIBIDI RIZZ!!!"), //todo: set up descriptions
+                            content: Text(desc),
                             actions: [
                               TextButton(onPressed: () {
                                 Navigator.of(context).pop();

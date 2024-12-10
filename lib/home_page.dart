@@ -63,6 +63,23 @@ class CalculatorHomePageState extends State<CalculatorHomePage> {
             IconButton(
               icon: const Icon(Icons.help_outline),
               onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("What is DiabFit?"),
+                      content: const Text(
+                          "Diabfit is a user-friendly app designed to help diabetics manage their daily health needs. It provides tools for tracking logging food intake, and managing insulin doses. Enter your carb intake for the day, and your blood glucose to easily calculate insulin doses."),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("OK"))
+                      ],
+                    );
+                  },
+                );
                 // Navigate to instructions page
                 //Navigator.push(
                 // context,

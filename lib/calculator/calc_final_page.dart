@@ -52,6 +52,9 @@ class _CalcFinalPageState extends State<CalcFinalPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
     mealTimeDose = (widget.finalTotalCarbs / widget.finalCarbRatio) +
         ((widget.finalCurrentBG - widget.finalTargetBG) / widget.finalISF);
     return Scaffold(
@@ -64,7 +67,7 @@ class _CalcFinalPageState extends State<CalcFinalPage> {
           },
           child: const Text(
             "Return",
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 20,),
           ),
         ),
       ),
@@ -74,18 +77,18 @@ class _CalcFinalPageState extends State<CalcFinalPage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "Recommended\nTotal Mealtime Insulin Dose",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 27,
+                    fontSize: screenWidth * .07,
                     height: 0,
                   ),
                 ),
                 AnimatedContainer(
                   duration: const Duration(seconds: 2),
                   curve: Curves.easeInOut,
-                  height: showDose ? 178 : 0,
+                  height: showDose ? screenHeight * .2 : 0,
                   child: Text(
                     mealTimeDose.toStringAsFixed(1),
                     textAlign: TextAlign.center,
@@ -113,11 +116,19 @@ class _CalcFinalPageState extends State<CalcFinalPage> {
                     ),
                   ],
                 ),
-                const Text(
+                Text(
                   "units",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 35,
+                    fontSize: screenWidth * .09,
+                    height: 0,
+                  ),
+                ),
+                Text(
+                  "*approximately*",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(                 
+                    fontSize: screenWidth * .045,
                     height: 0,
                   ),
                 ),

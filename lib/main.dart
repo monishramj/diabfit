@@ -13,24 +13,42 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool acceptedDisclaimer = prefs.getBool('acceptedDisclaimer') ?? false;
 
-  runApp(InsulinCalcApp(acceptedDisclaimer: acceptedDisclaimer));
+  // Load saved theme mode preference
+  bool isDarkMode = prefs.getBool('isDarkMode') ?? false;
+
+  runApp(InsulinCalcApp(
+    acceptedDisclaimer: acceptedDisclaimer,
+    isDarkMode: isDarkMode,
+  ));
 }
 
 class InsulinCalcApp extends StatefulWidget {
   final bool acceptedDisclaimer;
-  const InsulinCalcApp({super.key, required this.acceptedDisclaimer});
+  final bool isDarkMode;
+  const InsulinCalcApp(
+      {super.key, required this.acceptedDisclaimer, required this.isDarkMode});
 
   @override
   _InsulinCalcAppState createState() => _InsulinCalcAppState();
 }
 
 class _InsulinCalcAppState extends State<InsulinCalcApp> {
-  ThemeMode _themeMode = ThemeMode.light;
+  late ThemeMode _themeMode;
 
-  void _toggleTheme(bool isDarkMode) {
+  @override
+  void initState() {
+    super.initState();
+    _themeMode = widget.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+  }
+
+  // Toggle and save theme mode preference
+  void _toggleTheme(bool isDarkMode) async {
     setState(() {
       _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
     });
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isDarkMode', isDarkMode); // Save theme preference
   }
 
   @override
@@ -50,9 +68,8 @@ class _InsulinCalcAppState extends State<InsulinCalcApp> {
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
-                                return Colors
-                    .grey;
-              } else { 
+                return Colors.grey;
+              } else {
                 return Colors.red.shade700;
               }
             },
@@ -74,7 +91,7 @@ class _InsulinCalcAppState extends State<InsulinCalcApp> {
             style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.red.shade700),
         )),
-        colorScheme: ColorScheme.dark(
+        colorScheme: const ColorScheme.dark(
           primary: Colors.white,
           secondary: Colors.red,
         ),

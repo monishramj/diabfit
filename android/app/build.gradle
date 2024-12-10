@@ -12,20 +12,10 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
 
 android {
-    namespace "com.example.insulin_wizard"
-    compileSdkVersion 34 //!!! changed this 
-    ndkVersion flutter.ndkVersion
+    namespace "com.mrj.diab_fit"
+    compileSdkVersion 34 // Changed this
     
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -41,25 +31,33 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.diab_fit"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        applicationId "com.mrj.diab_fit"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
-        //minSdkVersion flutter.minSdkVersion
-        //targetSdkVersion flutter.targetSdkVersion
-        //versionCode flutterVersionCode.toInteger()
-        //versionName flutterVersionName
+        targetSdkVersion 34 // Update this to match compileSdkVersion if needed
+        versionCode 3
+        versionName "1.0.1"
+    }
+
+    signingConfigs {
+        release {
+            def keystorePropertiesFile = rootProject.file('key.properties')
+            def keystoreProperties = new Properties()
+            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            // Optional: Set minifyEnabled and shrinkResources for release builds
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

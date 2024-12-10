@@ -93,8 +93,7 @@ class _CalcStepOneState extends State<CalcStepOne> {
       // ignore: use_build_context_synchronously
       Flushbar(
         title: "Error",
-        message:
-            "Failed to load foods. Please check your internet connection and try again.",
+        message: "Failed to load foods. Please try again.",
         duration: const Duration(seconds: 3),
       ).show(context);
       //print('Error: $e');
@@ -190,22 +189,19 @@ class _CalcStepOneState extends State<CalcStepOne> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text(
-                            "Carb Intake",
-                            style: TextStyle(fontSize: width * 0.05), // Responsive text size
+                          title: const Text(
+                            "Carb Intake", // Responsive text size
                           ),
-                          content: Text(
-                            "To calculate your insulin dose, we require your carb intake for your meal. Use the Food Search to add foods to your list, or use Manual Input to track your own carb intake.",
-                            style: TextStyle(fontSize: width * 0.04), // Responsive text size
+                          content: const Text(
+                            "To calculate your insulin dose, we require your carb intake for your meal. Use the Food Search to add foods to your list, or use Manual Input to track your own carb intake. ** DOUBLE TAP TO REMOVE A FOOD FROM THE FOOD SEARCH** .", // Responsive text size
                           ),
                           actions: [
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text(
+                              child: const Text(
                                 "OK",
-                                style: TextStyle(fontSize: width * 0.04), // Responsive text size
                               ),
                             ),
                           ],
@@ -215,7 +211,7 @@ class _CalcStepOneState extends State<CalcStepOne> {
                   },
                   icon: Icon(
                     Icons.info_outline_rounded,
-                    size: width * 0.07, // Responsive icon size
+                    size: width * 0.07,
                   ),
                 ),
               ],
@@ -223,18 +219,29 @@ class _CalcStepOneState extends State<CalcStepOne> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Manual Input",
-                  style: TextStyle(fontSize: width * 0.05), // Responsive text size
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      "Manual Input",
+                      style: TextStyle(fontSize: width * 0.05),
+                    ),
+                    SizedBox(width: 10,),
+                    Switch(
+                      value: isManualInput,
+                      onChanged: (value) {
+                        setState(() {
+                          isManualInput = value;
+                        });
+                      },
+                    ),
+                  ],
                 ),
-                Switch(
-                  value: isManualInput,
-                  onChanged: (value) {
-                    setState(() {
-                      isManualInput = value;
-                    });
-                  },
-                ),
+                if (!isManualInput) ...[
+                  SizedBox(
+                      height: 30,
+                      child: Image.asset('assets/images/Edamam_Badge.png'))
+                ]
               ],
             ),
             if (isManualInput) ...[
@@ -251,7 +258,7 @@ class _CalcStepOneState extends State<CalcStepOne> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Carb Intake",
+                              "Carb Intake (g)",
                               softWrap: true,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
@@ -264,7 +271,8 @@ class _CalcStepOneState extends State<CalcStepOne> {
                         TextField(
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            icon: Icon(Icons.add_circle_outline, size: width * 0.07), // Responsive icon size
+                            icon: Icon(Icons.add_circle_outline,
+                                size: width * 0.07), // Responsive icon size
                             hintText: "Enter your carb intake...",
                           ),
                           onChanged: (value) {
@@ -282,7 +290,7 @@ class _CalcStepOneState extends State<CalcStepOne> {
                   Expanded(
                     child: TextField(
                       controller: _searchController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Search for foods...',
                       ),
                       onChanged: (value) {
@@ -299,7 +307,7 @@ class _CalcStepOneState extends State<CalcStepOne> {
                   IconButton(
                     icon: Icon(
                       Icons.refresh,
-                      size: width * 0.07, // Responsive icon size
+                      size: width * 0.07,
                     ),
                     onPressed: () {
                       final query = _searchController.text;
@@ -310,16 +318,16 @@ class _CalcStepOneState extends State<CalcStepOne> {
                   ),
                 ],
               ),
-              SizedBox(height: height * 0.02), // Responsive spacing
+              SizedBox(height: height * 0.02),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Wrap(
-                  spacing: width * 0.02, // Responsive spacing
-                  runSpacing: width * 0.01, // Responsive spacing
+                  spacing: width * 0.02,
+                  runSpacing: width * 0.01,
                   children: selected.map((food) {
                     return ClickableChip(
                       foodItem: food,
-                      size: width * 0.35, // Responsive chip size
+                      size: width * 0.35,
                       onDeleted: () {
                         setState(() {
                           selected.remove(food);
@@ -337,7 +345,8 @@ class _CalcStepOneState extends State<CalcStepOne> {
                   child: _isLoading
                       ? Center(
                           child: CircularProgressIndicator(
-                            strokeWidth: width * 0.01, // Responsive progress indicator width
+                            strokeWidth: width *
+                                0.01, // Responsive progress indicator width
                           ),
                         )
                       : ListView.builder(
@@ -348,17 +357,22 @@ class _CalcStepOneState extends State<CalcStepOne> {
                                 child: Image.network(
                                   suggestedFoods[index].getPic(),
                                   errorBuilder: (context, error, stackTrace) {
-                                    return Image.network(defaultFoodIcon); // use default image in case of error
+                                    return Image.network(
+                                        defaultFoodIcon); // use default image in case of error
                                   },
                                 ),
                               ),
                               title: Text(
                                 suggestedFoods[index].getFood(),
-                                style: TextStyle(fontSize: width * 0.04), // Responsive text size
+                                style: TextStyle(
+                                    fontSize:
+                                        width * 0.04), // Responsive text size
                               ),
                               subtitle: Text(
-                                  "${double.parse(suggestedFoods[index].nutritionBasicInfo["ENERC_KCAL"].toStringAsFixed(2))} kCal",
-                                  style: TextStyle(fontSize: width * 0.035), // Responsive text size
+                                "${double.parse(suggestedFoods[index].nutritionBasicInfo["ENERC_KCAL"].toStringAsFixed(2))} kCal - 1 Serving",
+                                style: TextStyle(
+                                    fontSize:
+                                        width * 0.035), // Responsive text size
                               ),
                               onTap: () async {
                                 final selectedFood = await showDialog<FoodItem>(
@@ -370,6 +384,7 @@ class _CalcStepOneState extends State<CalcStepOne> {
                                   barrierDismissible: true,
                                 );
                                 addSelectedFood(selectedFood!);
+                                _searchController.clear();
                               },
                             );
                           },
@@ -404,7 +419,8 @@ class ClickableChip extends StatefulWidget {
 //class for building the chip that is displayed on the row when a food item is selected from the search list
 class _ClickableChipState extends State<ClickableChip> {
   bool clickCheck = false;
-  String defaultFoodIcon = "https://cdn0.iconfinder.com/data/icons/basic-11/97/16-512.png";
+  String defaultFoodIcon =
+      "https://cdn0.iconfinder.com/data/icons/basic-11/97/16-512.png";
   @override
   Widget build(BuildContext context) {
     // Get screen size
@@ -437,7 +453,8 @@ class _ClickableChipState extends State<ClickableChip> {
           child: Container(
             width: widget.size,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(width * 0.02), // Responsive border radius
+              borderRadius: BorderRadius.circular(
+                  width * 0.02), // Responsive border radius
             ),
             child: Stack(
               alignment: Alignment.topLeft,
@@ -470,7 +487,8 @@ class _ClickableChipState extends State<ClickableChip> {
                                 ? loadingProgress.cumulativeBytesLoaded /
                                     (loadingProgress.expectedTotalBytes ?? 1)
                                 : null,
-                            strokeWidth: width * 0.01, // Responsive progress indicator width
+                            strokeWidth: width *
+                                0.01, // Responsive progress indicator width
                           ),
                         );
                       }
@@ -490,7 +508,7 @@ class _ClickableChipState extends State<ClickableChip> {
                         widget.foodItem.food,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          fontSize: widget.size * 0.2, // Responsive text size
+                          fontSize: widget.size * 0.16, // Responsive text size
                           shadows: [
                             Shadow(
                               blurRadius: 30.0,

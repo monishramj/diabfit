@@ -1,6 +1,6 @@
-package com.example.insulin_wizard
+package com.mrj.diab_fit
 
 import io.flutter.embedding.android.FlutterActivity
 
-class MainActivity: FlutterActivity() {
+class MainActivity : FlutterActivity() {
 }

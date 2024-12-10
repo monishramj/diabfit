@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:insulin_wizard/calculator/step_3/calc_step_three.dart';
@@ -30,6 +32,9 @@ class CalcStepTwoState extends State<CalcStepTwo> {
 
   String totalCalories = "";
   String tdid = "";
+  bool isWeightCalc = false;
+  double bodyWeight = 0;
+  String weightUnit = 'lbs'; // Default unit
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,6 @@ class CalcStepTwoState extends State<CalcStepTwo> {
         title: const Text("Step 2 - Medicinal Info"),
         centerTitle: true,
       ),
-
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(screenWidth * 0.02),
         child: ElevatedButton(
@@ -51,13 +55,21 @@ class CalcStepTwoState extends State<CalcStepTwo> {
             bool hasSelectedFoods = widget.selectedFoods.isNotEmpty;
             double? parsedTDID = double.tryParse(tdid);
             bool isValidTdid = parsedTDID != null && parsedTDID > 0;
-            if ((hasSelectedFoods || widget.isManualInput) && isValidTdid) {
+            bool isValidBodyWeight = bodyWeight > 0;
+
+            if ((hasSelectedFoods || widget.isManualInput) &&
+                (isValidTdid || (isWeightCalc && isValidBodyWeight))) {
+              double calculatedTdid = isWeightCalc
+                  ? (weightUnit == 'lbs' ? bodyWeight / 4 : bodyWeight * 0.55)
+                  : double.tryParse(tdid) ?? 0;
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => CalcStepThree(
-                    tdid: double.tryParse(tdid) ?? 0,
-                    totalCarbsStep3: widget.isManualInput ? widget.trackedCarbs : calculateTotalCarbs(widget.selectedFoods),
+                    tdid: calculatedTdid,
+                    totalCarbsStep3: widget.isManualInput
+                        ? widget.trackedCarbs
+                        : calculateTotalCarbs(widget.selectedFoods),
                   ),
                 ),
               );
@@ -67,15 +79,21 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                 message: "Go back to Step 1 to configure your foods.",
                 duration: const Duration(seconds: 3),
               ).show(context);
-            } else if (parsedTDID != null && parsedTDID <= 0) {
+            } else if (parsedTDID != null && parsedTDID <= 0 && !isWeightCalc) {
               Flushbar(
                 title: "TDID value cannot be negative or zero.",
                 message: "Please enter a valid positive TDID value.",
                 duration: const Duration(seconds: 3),
               ).show(context);
+            } else if (isWeightCalc && bodyWeight <= 0) {
+              Flushbar(
+                title: "Your body weight cannot be negative or zero.",
+                message: "Please enter a valid positive body weight.",
+                duration: const Duration(seconds: 3),
+              ).show(context);
             } else {
               Flushbar(
-                title: "Please enter a valid TDID value.",
+                title: "Please enter a valid value.",
                 message: "Press the Info(i) icon to learn more.",
                 duration: const Duration(seconds: 3),
               ).show(context);
@@ -123,16 +141,16 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                         padding: EdgeInsets.all(screenWidth * 0.02),
                         child: Card(
                           child: Container(
-                            padding: EdgeInsets.fromLTRB(
-                                screenWidth * 0.03,
-                                screenWidth * 0.03,
-                                screenWidth * 0.03,
-                                0),
-                            height: isPortrait ? screenHeight * 0.4 : screenHeight * 0.5,
+                            padding: EdgeInsets.fromLTRB(screenWidth * 0.03,
+                                screenWidth * 0.03, screenWidth * 0.03, 0),
+                            height: isPortrait
+                                ? screenHeight * 0.3
+                                : screenHeight * 0.5,
                             child: widget.selectedFoods.isEmpty
                                 ? Center(
                                     child: Padding(
-                                      padding: EdgeInsets.all(screenWidth * 0.02),
+                                      padding:
+                                          EdgeInsets.all(screenWidth * 0.02),
                                       child: Opacity(
                                         opacity: .3,
                                         child: Text(
@@ -176,7 +194,8 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                                               ).show(context);
                                             }
                                           },
-                                          direction: DismissDirection.startToEnd,
+                                          direction:
+                                              DismissDirection.startToEnd,
                                           movementDuration:
                                               const Duration(milliseconds: 500),
                                           background: Container(
@@ -187,10 +206,12 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                                             ),
                                             alignment: Alignment.centerLeft,
                                             child: Padding(
-                                              padding: EdgeInsets.all(screenWidth * 0.03),
+                                              padding: EdgeInsets.all(
+                                                  screenWidth * 0.03),
                                               child: Icon(
                                                 Icons.delete,
-                                                color: Theme.of(context).canvasColor,
+                                                color: Theme.of(context)
+                                                    .canvasColor,
                                               ),
                                             ),
                                           ),
@@ -202,8 +223,8 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                                                   child: Image.network(
                                                     widget.selectedFoods[index]
                                                         .getPic(),
-                                                    errorBuilder: (context, error,
-                                                        stackTrace) {
+                                                    errorBuilder: (context,
+                                                        error, stackTrace) {
                                                       return Image.network(
                                                           defaultFoodIcon);
                                                     },
@@ -215,7 +236,7 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                                                     .getFood(),
                                                 textAlign: TextAlign.left,
                                                 style: TextStyle(
-                                                  fontSize: screenWidth * 0.04,
+                                                  fontSize: screenWidth * 0.043,
                                                 ),
                                               ),
                                               subtitle: Text(
@@ -246,20 +267,19 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: screenHeight * 0.02,
-                      ),
                       Text(
                         "Total Carbohydrates",
                         style: TextStyle(
                           fontSize: screenWidth * 0.06,
+                          height: 0,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       Text(
                         "${calculateTotalCarbs(widget.selectedFoods).toStringAsFixed(2)}g",
                         style: TextStyle(
-                          fontSize: screenWidth * 0.08,
+                          height: 0,
+                          fontSize: screenWidth * 0.12,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -281,19 +301,129 @@ class CalcStepTwoState extends State<CalcStepTwo> {
                   fontSize: screenWidth * 0.08,
                 ),
               ),
+              Row(
+                children: [
+                  Checkbox(
+                      value: isWeightCalc,
+                      tristate: false,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isWeightCalc = value ?? false;
+                        });
+                      }),
+                  Text(
+                    "Don't know your Total Daily Insulin?",
+                    style: TextStyle(fontSize: screenWidth * .035),
+                  )
+                ],
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  InputBox(
-                    txt: "Total Daily Insulin Dose",
-                    acronym: "TDID",
-                    icon: Icons.speed,
-                    input: (value) {
-                      setState(() {
-                        tdid = value;
-                      });
-                    },
-                  ),
+                  if (isWeightCalc) ...[
+                    Container(
+                      padding: const EdgeInsets.all(2),
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Body Weight",
+                                    softWrap: true,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      hoverColor:
+                                          Theme.of(context).highlightColor,
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text("Body Weight"),
+                                              content: Text(
+                                                  "Enter your body weight in either kilograms or pounds. This value is used to estimate your Total Daily Insulin Dose (TDID) based on your weight. This is an approximate estimate. Contact your doctor for a more accurate dosage."),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text("OK"))
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(
+                                          Icons.info_outline_rounded)),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        icon: Icon(Icons.man_3_sharp),
+                                        hintText: "Enter your body weight.",
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          bodyWeight = double.tryParse(value) ??
+                                              0; // Set default value to 0
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  DropdownButton<String>(
+                                    value: weightUnit,
+                                    items: ['lbs', 'kg']
+                                        .map((String unit) =>
+                                            DropdownMenuItem<String>(
+                                              value: unit,
+                                              child: Text(unit),
+                                            ))
+                                        .toList(),
+                                    onChanged: (String? newUnit) {
+                                      setState(() {
+                                        weightUnit = newUnit ?? 'lbs';
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ] else ...[
+                    InputBox(
+                      txt: "Total Daily Insulin",
+                      acronym: "TDID",
+                      desc:
+                          "This is the total amount of insulin you need each day to keep your blood sugar in check. It includes both long-acting and short-acting insulin. You can get an exact number from your doctor, or approximate through body weight calculations.",
+                      icon: Icons.speed,
+                      input: (value) {
+                        setState(() {
+                          tdid = value;
+                        });
+                      },
+                    ),
+                  ]
                 ],
               ),
             ],

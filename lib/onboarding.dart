@@ -57,11 +57,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: SingleChildScrollView(
                 controller: _scrollController,
                 child: const Text(
-                  '''
-Summary:
-
-This application, DiabFit, is not created by medical professionals. Although the calculations are based on research, they are not guaranteed to be 100% accurate. Users should always consult medical experts and treat the information from this app with caution.
-
+                 '''
 General Information:
 
 The DiabFit app is designed to assist users in estimating insulin doses based on nutritional information and general knowledge. This app is not created by medical professionals and is intended for educational purposes only. While we strive to provide useful and accurate information, DiabFit should not be relied upon as a sole source for managing diabetes or making medical decisions.
@@ -94,7 +90,7 @@ The DiabFit app may be updated periodically to improve functionality and accurac
 
 Contact Information:
 
-If you have any questions, concerns, or feedback regarding the DiabFit app, please contact us at INSERT EMAIL HERE LATER.
+If you have any questions, concerns, or feedback regarding the DiabFit app, please contact us at diabfitofficial@gmail.com.
 
 Acknowledgment:
 
